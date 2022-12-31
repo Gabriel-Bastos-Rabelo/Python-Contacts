@@ -1,8 +1,9 @@
+import ast
 
 agenda = []
 alterada = False
 tipos_de_telefone = ["celular ", "fixo ", "residência ", "trabalho ", "fax "]
-pergunta = input(f"Tipo de telefone: [{''.join(tipos_de_telefone)}]")
+#pergunta = input(f"Tipo de telefone: [{''.join(tipos_de_telefone)}]")
 
 
 def pede_nome(nome="vazio"):
@@ -21,11 +22,16 @@ def pede_telefone(telefone="vazio"):
 
 def pede_tipo_de_telefone(tipo="vazio"):
     while True:
-        pergunta = input(f"Tipo de telefone: [{''.join(tipos_de_telefone)}]")
+        pergunta = input(
+            f"Tipo de telefone: [{''.join(tipos_de_telefone)}]").lower()
 
         if pergunta == "":
             return tipo
-        return pergunta
+        for t in tipos_de_telefone:
+            if t.startswith(pergunta):
+                return pergunta
+        else:
+            print("Telefone inválido!")
 
 
 def pede_email(email="vazio"):
@@ -43,8 +49,13 @@ def pede_aniversario(aniversario="vazio"):
 
 
 def mostrar_dados(nome, telefone, email, aniversario):
-    print(
-        f"Nome: {nome} | Telefone: {telefone} | Email: {email} | Aniversário: {aniversario}")
+    print(f"Nome: {nome}")
+    print("Telefones:")
+    for e in telefone:
+        print(f"Telefone: {e[0]}  |Tipo: {e[1]}")
+    print(f"Email: {email}")
+    print(f"Aniversário: {aniversario}")
+    print("-"*15)
 
 
 def pede_nome_arquivo():
@@ -81,11 +92,11 @@ def novo():
             telefone = pede_telefone()
             tipo = pede_tipo_de_telefone()
             telefones.append([telefone, tipo])
-            if confirmacao("adicionar mais um número? (s/n)") == "n":
+            if confirmacao("adicionar mais um número") == "n":
                 break
         email = pede_email()
         aniversario = pede_aniversario()
-        agenda.append([nome, telefone, email, aniversario])
+        agenda.append([nome, telefones, email, aniversario])
         alterada = True
 
 
@@ -120,18 +131,25 @@ def altera():
     p = pesquisa(pede_nome())
     if p is not None:
         nome = agenda[p][0]
-        telefone = agenda[p][1]
+        telefones = agenda[p][1]
         email = agenda[p][2]
         aniversario = agenda[p][3]
         print("Encontrado:")
-        mostrar_dados(nome, telefone, email, aniversario)
+        mostrar_dados(nome, telefones, email, aniversario)
         nome = pede_nome(nome)
-        telefone = pede_telefone(telefone)
+        print(agenda[p])
+        print(telefones)
+        print(telefones[0])
+        for index, telefone in enumerate(telefones):
+            telefone_novo = pede_telefone(telefone[0])
+            tipo = pede_tipo_de_telefone(telefone[1])
+            telefones[index] = [telefone_novo,tipo]
         email = pede_email()
         aniversario = pede_aniversario()
         confirmação = confirmacao("alteração")
         if confirmação == "s":
-            agenda[p] = [nome, telefone, email, aniversario]
+            agenda[p] = [nome, telefones, email, aniversario]
+            grava()
             print("Alteração realizada!")
             alterada = True
         else:
@@ -146,7 +164,7 @@ def lista():
     for posição, e in enumerate(agenda):
         print(f"Posição ocupada {posição+1}º")
         e[0] = e[0].replace("$", "#")
-        e[1] = e[1].replace("$", "#")
+        #e[1] = e[1].replace("$", "#")
         e[2] = e[2].replace("$", "#")
         e[3] = e[3].replace("$", "#")
         mostrar_dados(e[0], e[1], e[2], e[3])
@@ -179,8 +197,10 @@ def ler_arquivo(nome):
         with open(nome, "r", encoding="utf-8") as arquivo:
             agenda = []
             for l in arquivo.readlines():
-                nome_pessoa, telefone, email, aniversario = l.strip().split("#")
-                agenda.append([nome_pessoa, telefone, email, aniversario])
+                nome_pessoa, telefones, email, aniversario = l.strip().split("#")
+                telefones_lista = ast.literal_eval(telefones)
+                
+                agenda.append([nome_pessoa, telefones_lista, email, aniversario])
         return True
     except Exception as e:
         print(f"Arquivo não encontrado. ERRO: {e}")
@@ -202,7 +222,7 @@ def gravar_em_arquivo(nome):
         with open(nome, "r+", encoding="utf-8") as arquivo:
             for e in agenda:
                 e[0] = e[0].replace("#", "$")
-                e[1] = e[1].replace("#", "$")
+                #e[1] = e[1].replace("#", "$")
                 e[2] = e[2].replace("#", "$")
                 e[3] = e[3].replace("#", "$")
                 arquivo.write(f"{e[0]}#{e[1]}#{e[2]}#{e[3]}\n")

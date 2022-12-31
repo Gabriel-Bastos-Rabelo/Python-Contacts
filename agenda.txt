@@ -1,2 +1,4 @@
-Gabriel#98 982821387#gbastosrabelo@gmail.com#07/05/2003
-Rodrigo#61 9738992728#rodrigo@hotmail.com#22/02/2004
+Ana#[['98 98256742', 'celular'], ['34567890', 'fixo']]#ana@yahoo.com.br#22/02
+Gabriel#[['98 982828276', 'celular'], ['36750440', 'residência']]#gbastosrabelo@gmail.com#07/05
+Paulo#[['62 982456789', 'celular'], ['34567890', 'residência']]#paulo@hotmail.com#27/11
+rafael#[['98 98728797', 'celular']]#rafael@hotmail.com#11/02
